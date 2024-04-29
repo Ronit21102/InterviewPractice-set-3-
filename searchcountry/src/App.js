@@ -1,60 +1,65 @@
+import "./App.css";
 import { useEffect, useState } from "react";
-import "./App.css"
-function App() {
-   const [countries,setCountries] = useState([]);
-   const [filtered,setFiltered] =useState([]);
-   const [searchStr,setSearchStr] =useState("");
-  useEffect(()=>{
-      const getCountry= async()=>{
-          
-        try {
-          const data = await fetch(' https://restcountries.com/v3.1/all');
-          const json = await data.json();
-          console.log(json)
-          setCountries(json);
-        } catch (error) {
-          console.error(error.message)
-        }
-      }
-    getCountry();
-  },[])
 
-  useEffect(()=>{
-        
-    const data = countries.filter((country)=>{
-         return country.name.common.toLowerCase().includes(searchStr)
-    })
-    setFiltered(data)
-  },[searchStr])
-  
-   const handleChange =(e)=>{
-      
-    const search = e.target.value;
-    setSearchStr(search)
-   }
+function App() {
+  const [countries, setCountries] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await fetch("https://restcountries.com/v3.1/all");
+        const data = await resp.json();
+        setCountries(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const data = countries.filter((country) =>
+      country.name.common.toLowerCase().includes(search.toLowerCase())
+    );
+    setFiltered(data);
+  }, [search]);
+
+  console.log(countries);
   return (
-    <>
-      <input type="text" placeholder="Search for the Country" onChange={handleChange} />
+    <div>
+      <div className="inp">
+        <input
+          type="text"
+          placeholder="Enter a country"
+          onChange={(e) => handleChange(e)}
+        />
+      </div>
       <div className="App">
-        {searchStr === ""
-          ? countries.map((country,ind) => {
+        {search === ""
+          ? countries.map((country) => {
               return (
-                <div className="countryCard" key={ind}>
+                <div className="countryCard">
                   <img src={country.flags.png} alt={country.flag}></img>
                   <p>{country.name.common}</p>
                 </div>
               );
             })
-          : filtered.map((country,ind) => {
+          : filtered.map((country) => {
               return (
-                <div className="countryCard" key={ind} >
+                <div className="countryCard">
                   <img src={country.flags.png} alt={country.flag}></img>
                   <p>{country.name.common}</p>
                 </div>
               );
             })}
       </div>
-    </>
+    </div>
   );
 }
 
