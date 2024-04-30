@@ -30,7 +30,6 @@ function App() {
     setFiltered(data);
   }, [search]);
 
-  console.log(countries);
   return (
     <div>
       <div className="inp">
@@ -50,7 +49,7 @@ function App() {
                 </div>
               );
             })
-          : filtered.map((country) => {
+          :  filtered.length===0?<div>No data found</div>:filtered.map((country) => {
               return (
                 <div className="countryCard">
                   <img src={country.flags.png} alt={country.flag}></img>
